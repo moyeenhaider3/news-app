@@ -16,7 +16,7 @@ class NewsSourceLoaded extends NewsSourceState {
   final Set<Source> selected;
   const NewsSourceLoaded({required this.sources, required this.selected});
   @override
-  List<Object> get props => [sources];
+  List<Object> get props => [sources, selected];
 }
 
 class NewsSourceError extends NewsSourceState {

@@ -35,9 +35,7 @@ class NewsSourceCubit extends Cubit<NewsSourceState> {
     if (state is NewsSourceLoaded) {
       final currentState = state as NewsSourceLoaded;
 
-      final Set<Source> updatedSelected = Set.from(currentState.selected)
-        ..add(sourceToAdd);
-
+      final updatedSelected = {...currentState.selected, sourceToAdd};
       emit(NewsSourceLoaded(
         sources: currentState.sources,
         selected: updatedSelected,
@@ -50,13 +48,25 @@ class NewsSourceCubit extends Cubit<NewsSourceState> {
     if (state is NewsSourceLoaded) {
       final currentState = state as NewsSourceLoaded;
 
-      final Set<Source> updatedSelected = Set.from(currentState.selected)
+      final updatedSelected = {...currentState.selected}
         ..remove(sourceToRemove);
 
       emit(NewsSourceLoaded(
         sources: currentState.sources,
         selected: updatedSelected,
       ));
+    }
+  }
+
+  void toggleSelectedSource(Source source) {
+    if (state is NewsSourceLoaded) {
+      final currentState = state as NewsSourceLoaded;
+      final isCurrentlySelected = currentState.selected.contains(source);
+      final selectedSource = isCurrentlySelected
+          ? ({...currentState.selected}..remove(source))
+          : {...currentState.selected, source};
+      emit(NewsSourceLoaded(
+          sources: currentState.sources, selected: selectedSource));
     }
   }
 

@@ -11,11 +11,17 @@ class SearchCubit extends Cubit<SearchState> {
 
   final NewsApi newsApi;
 
-  Future<void> onSearch(String query) async {
+  Future<void> onSearch(String query,
+      [List<Source>? sources, int? firstPage, String? type]) async {
     //necessary imports
     try {
+      final List<String>? sourceIds = sources
+          ?.map((e) => e.id)
+          .where((id) => id != null)
+          .cast<String>()
+          .toList();
       final List<Article> articles =
-          await newsApi.loadFeedFromTopHeadline(q: query);
+          await newsApi.loadFeedFromEverything(q: query, sources: sourceIds);
 
       final hasMore = articles.isNotEmpty;
 
@@ -26,11 +32,6 @@ class SearchCubit extends Cubit<SearchState> {
       // Catch and handle GeneralException
       print("General Exception caught: ${e.toString()}");
       // Handle the exception as needed, e.g., show an error message to the user
-    } catch (e) {
-      emit(SearchError(errorMsg: e.toString()));
-      // Catch other exceptions
-      print("Unexpected Exception caught: ${e.toString()}");
-      // Handle the exception as needed
     }
   }
 
@@ -39,11 +40,10 @@ class SearchCubit extends Cubit<SearchState> {
       if (state is SearchLoaded) {
         final page = (state as SearchLoaded).page + 1;
         final oldArticles = (state as SearchLoaded).articles;
-        emit(LoadingSearch());
 
         // Call loadSearch with necessary parameters
         final List<Article> articles =
-            await newsApi.loadFeedFromTopHeadline(page: page, q: query);
+            await newsApi.loadFeedFromEverything(page: page, q: query);
 
         final hasMore = articles.isNotEmpty;
 
@@ -55,7 +55,7 @@ class SearchCubit extends Cubit<SearchState> {
       if (state is LoadingSearch || state is InitialSearch) {
         // Call loadSearch with necessary parameters
         final List<Article> articles =
-            await newsApi.loadFeedFromTopHeadline(q: query);
+            await newsApi.loadFeedFromEverything(q: query);
 
         final hasMore = articles.isNotEmpty;
 

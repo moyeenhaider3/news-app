@@ -4,7 +4,6 @@ import 'package:app/presentation/blocs/feed/feed_cubit.dart';
 import 'package:app/presentation/blocs/news_source/news_source_cubit.dart';
 import 'package:app/presentation/pages/news_detail.dart';
 import 'package:app/presentation/widgets/feed_card.dart';
-import 'package:app/presentation/widgets/soucres_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,19 +35,6 @@ class _FeedsPageState extends State<FeedsPage> {
             },
             icon: const Icon(Icons.search),
           ),
-          IconButton(
-            onPressed: () async {
-              final blc = context.read<NewsSourceCubit>();
-              showDialog(
-                context: context,
-                builder: (context) => BlocProvider<NewsSourceCubit>.value(
-                  value: blc,
-                  child: const SourceSelectionDialog(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.select_all),
-          )
         ],
       ),
       body: BlocBuilder<FeedCubit, FeedState>(
@@ -65,6 +51,7 @@ class _FeedsPageState extends State<FeedsPage> {
           }
           if (state is FeedLoaded) {
             final articles = state.articles;
+            // TODO:remove bloc listener as we don't need now, because this logic is in search page
 
             return BlocListener<NewsSourceCubit, NewsSourceState>(
               listener: (context, state) {
@@ -72,7 +59,7 @@ class _FeedsPageState extends State<FeedsPage> {
                   final List<Source>? selectedSources =
                       context.read<NewsSourceCubit>().getSelectedSources();
 
-                  context.read<FeedCubit>().loadPage(selectedSources);
+                  // context.read<FeedCubit>().loadPage(selectedSources, 1);
                 }
               },
               child: RefreshIndicator(

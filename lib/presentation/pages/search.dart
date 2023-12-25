@@ -1,6 +1,9 @@
+import 'package:app/domain/models/feed.dart';
+import 'package:app/presentation/blocs/news_source/news_source_cubit.dart';
 import 'package:app/presentation/blocs/search/search_cubit.dart';
 import 'package:app/presentation/pages/news_detail.dart';
 import 'package:app/presentation/widgets/feed_card.dart';
+import 'package:app/presentation/widgets/soucres_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,6 +47,19 @@ class _SearchPageState extends State<SearchPage> {
             },
             icon: const Icon(Icons.search),
           ),
+          IconButton(
+            onPressed: () async {
+              final blc = context.read<NewsSourceCubit>();
+              showDialog(
+                context: context,
+                builder: (context) => BlocProvider<NewsSourceCubit>.value(
+                  value: blc,
+                  child: const SourceSelectionDialog(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.select_all),
+          )
         ],
       ),
       body: BlocBuilder<SearchCubit, SearchState>(
@@ -65,33 +81,44 @@ class _SearchPageState extends State<SearchPage> {
           }
           if (state is SearchLoaded) {
             final articles = state.articles;
+            return BlocListener<NewsSourceCubit, NewsSourceState>(
+              listener: (context, state) {
+                if (state is NewsSourceLoaded) {
+                  final List<Source>? selectedSources =
+                      context.read<NewsSourceCubit>().getSelectedSources();
 
-            return SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                children: [
-                  // Display articles
-                  ...articles.map(
-                    (article) => FeedCard(
-                      article: article,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NewsDetailPage(
-                              article: article,
+                  context
+                      .read<SearchCubit>()
+                      .onSearch(_searchController.text, selectedSources, 1);
+                }
+              },
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    // Display articles
+                    ...articles.map(
+                      (article) => FeedCard(
+                        article: article,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NewsDetailPage(
+                                article: article,
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  // Loading indicator at the end of the list
-                  if (state.hasMore)
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                ],
+                    // Loading indicator at the end of the list
+                    if (state.hasMore)
+                      const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                  ],
+                ),
               ),
             );
           }

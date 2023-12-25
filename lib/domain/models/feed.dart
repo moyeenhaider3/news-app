@@ -65,6 +65,18 @@ class Source extends Equatable {
   List<Object> get props {
     return [];
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Source &&
+          runtimeType == other.runtimeType &&
+          // Compare relevant properties for equality
+          id == other.id &&
+          name == other.name; // Add other properties as needed
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode;
 }
 
 class Article extends Equatable {

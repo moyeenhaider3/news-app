@@ -8,13 +8,14 @@ abstract class NewsApi {
     int page = 0,
     int pageSize = 10,
     String country = "in",
-    List<String>? sources,
+    // List<String>? sources,
     String? q,
   });
   Future<List<Article>> loadFeedFromEverything({
     int page = 0,
     int pageSize = 10,
     String? q,
+    List<String>? sources,
     String? sortBy,
   });
   Future<List<Source>> fetchSources();
@@ -30,7 +31,7 @@ class NewsApiImp implements NewsApi {
     int page = 1,
     int pageSize = 5,
     String country = "in",
-    List<String>? sources,
+    // List<String>? sources,
     String? q,
   }) async {
     try {
@@ -48,11 +49,11 @@ class NewsApiImp implements NewsApi {
       if (page > 1) {
         queryParams.add("page=$page");
       }
-
-      if (sources != null) {
-        String sourcesString = sources.join(",");
-        queryParams.add("sources=$sourcesString");
-      }
+      //!cannot mix sources with country
+      // if (sources != null) {
+      //   String sourcesString = sources.join(",");
+      //   queryParams.add("sources=$sourcesString");
+      // }
       if (country.isNotEmpty) {
         queryParams.add("country=$country");
       }
@@ -63,6 +64,7 @@ class NewsApiImp implements NewsApi {
       }
 
       // Check for errors in the API response
+      print("printing baseUrl$baseUrl");
       final result = await dio.get(baseUrl);
 
       if (result.statusCode == 200) {
@@ -87,24 +89,28 @@ class NewsApiImp implements NewsApi {
 
   @override
   Future<List<Article>> loadFeedFromEverything({
-    int page = 0,
+    int page = 1,
     int pageSize = 10,
     String? q,
+    List<String>? sources,
     String? sortBy,
   }) async {
     try {
       // Build the base URL
-      String baseUrl = "newsapi.org/v2/everything";
+      String baseUrl = "https://newsapi.org/v2/everything";
 
       // Use a list to build query parameters
       List<String> queryParams = [];
 
       // Add parameters to the list
-      if (q != null) {
+      if (q != null && q.isNotEmpty) {
         queryParams.add("q=$q");
       }
-
-      if (page > 0) {
+      if (sources != null) {
+        String sourcesString = sources.take(20).join(",");
+        queryParams.add("sources=$sourcesString");
+      }
+      if (page > 1) {
         queryParams.add("page=$page");
       }
 
@@ -120,6 +126,7 @@ class NewsApiImp implements NewsApi {
       if (queryParams.isNotEmpty) {
         baseUrl += "?${queryParams.join("&")}";
       }
+      print("printing baseUrl$baseUrl");
 
       // Check for errors in the API response
       final result = await dio.get(baseUrl);
@@ -131,7 +138,7 @@ class NewsApiImp implements NewsApi {
 
         // Map the list of dynamic articles to a list of Article objects
         final List<Article> articles = articlesData
-            .map((articleData) => Article.fromJson(articleData))
+            .map((articleData) => Article.fromMap(articleData))
             .toList();
 
         return articles;
