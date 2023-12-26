@@ -21,9 +21,6 @@ abstract class NewsApi {
   Future<List<Source>> fetchSources();
 }
 
-// Your API key is: d599203f3ccd4f68822563fed3918b28
-// const apiKey = "d599203f3ccd4f68822563fed3918b28";
-
 class NewsApiImp implements NewsApi {
   final dio = Dio(BaseOptions(headers: {"X-Api-Key": AppConfig.apiKey}));
   @override
