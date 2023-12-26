@@ -10,10 +10,11 @@ final sl = GetIt.instance;
 
 void setup() {
   sl.registerSingleton<NewsApiImp>(NewsApiImp());
-  sl.registerSingleton<LocationCubit>(LocationCubit());
+  sl.registerFactory<LocationCubit>(() => LocationCubit());
   sl.registerFactory<FilterCubit>(() => FilterCubit());
-  sl.registerFactory<FeedCubit>(
-      () => FeedCubit(newsApi: sl<NewsApiImp>(), lc: sl<LocationCubit>()));
+  sl.registerFactory<FeedCubit>(() => FeedCubit(
+        newsApi: sl<NewsApiImp>(),
+      ));
   sl.registerFactory<SearchCubit>(() => SearchCubit(newsApi: sl<NewsApiImp>()));
   sl.registerFactory<NewsSourceCubit>(
       () => NewsSourceCubit(newsApi: sl<NewsApiImp>()));

@@ -28,7 +28,7 @@ class SearchCubit extends Cubit<SearchState> {
       final List<Article> articles = await newsApi.loadFeedFromEverything(
           q: query, sources: sourceIds, sortBy: type);
 
-      final hasMore = articles.isNotEmpty;
+      final hasMore = !(articles.length < 10);
 
       emit(
         SearchLoaded(
@@ -64,7 +64,7 @@ class SearchCubit extends Cubit<SearchState> {
         final List<Article> articles = await newsApi.loadFeedFromEverything(
             page: page, q: query, sortBy: type, sources: sourceIds);
 
-        final hasMore = articles.isNotEmpty;
+        final hasMore = !(articles.length < 10);
 
         emit(SearchLoaded(
             articles: [...oldArticles, ...articles],
@@ -84,7 +84,7 @@ class SearchCubit extends Cubit<SearchState> {
         final List<Article> articles = await newsApi.loadFeedFromEverything(
             q: query, sortBy: type, sources: sourceIds);
 
-        final hasMore = articles.isNotEmpty;
+        final hasMore = !(articles.length < 10);
 
         emit(SearchLoaded(
             articles: articles,

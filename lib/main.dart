@@ -3,7 +3,6 @@ import 'package:app/core/utils/observer.dart';
 import 'package:app/di.dart';
 import 'package:app/presentation/blocs/feed/feed_cubit.dart';
 import 'package:app/presentation/blocs/filter/filter_cubit.dart';
-import 'package:app/presentation/blocs/location/location_cubit.dart';
 import 'package:app/presentation/blocs/news_source/news_source_cubit.dart';
 import 'package:app/presentation/blocs/search/search_cubit.dart';
 import 'package:app/presentation/pages/feeds.dart';
@@ -32,9 +31,6 @@ class MyApp extends StatelessWidget {
       routes: {
         Routes.feed: (context) => MultiBlocProvider(
               providers: [
-                BlocProvider<LocationCubit>(
-                  create: (context) => sl()..fetchCountryCodeName(),
-                ),
                 BlocProvider<FeedCubit>(
                   create: (context) => sl()..loadPage(),
                 ),

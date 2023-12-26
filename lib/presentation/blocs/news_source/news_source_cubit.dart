@@ -79,6 +79,13 @@ class NewsSourceCubit extends Cubit<NewsSourceState> {
     return false;
   }
 
+  void setSelectedSources(Set<Source> sources) {
+    if (state is NewsSourceLoaded) {
+      emit(NewsSourceLoaded(
+          sources: (state as NewsSourceLoaded).sources, selected: sources));
+    }
+  }
+
   List<Source>? getSelectedSources() {
     if (state is NewsSourceLoaded) {
       final selectedSources = (state as NewsSourceLoaded).selected.toList();

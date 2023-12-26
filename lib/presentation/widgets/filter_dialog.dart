@@ -79,9 +79,8 @@ class SelectFilterDialog extends StatelessWidget {
             List<Source> sources =
                 context.read<NewsSourceCubit>().getSelectedSources() ?? [];
 
-            context
-                .read<SearchCubit>()
-                .onSearch(type: type, query: query, sources: sources);
+            context.read<SearchCubit>().fetchFilteredResult(
+                type: type, query: query, sources: sources);
 
             Navigator.of(context).pop();
           },
