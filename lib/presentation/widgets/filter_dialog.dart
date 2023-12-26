@@ -17,7 +17,7 @@ class SelectFilterDialog extends StatelessWidget {
       content: BlocBuilder<FilterCubit, FilterState>(
         builder: (context, state) {
           final selectedSorting = state.type;
-          SingleChildScrollView(
+          return SingleChildScrollView(
             child: Column(children: [
               ListTile(
                 title: const Text('Popularity'),
@@ -54,7 +54,6 @@ class SelectFilterDialog extends StatelessWidget {
               ),
             ]),
           );
-          return const SizedBox.shrink();
         },
       ),
       actions: <Widget>[
@@ -77,11 +76,8 @@ class SelectFilterDialog extends StatelessWidget {
             }
 
             //selected sources, if there's any
-            final sourceCubit = context.read<NewsSourceCubit>();
-            List<Source> sources = [];
-            if (sourceCubit is NewsSourceLoaded) {
-              sources = (sourceCubit as NewsSourceLoaded).selected.toList();
-            }
+            List<Source> sources =
+                context.read<NewsSourceCubit>().getSelectedSources() ?? [];
 
             context
                 .read<SearchCubit>()

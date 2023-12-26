@@ -41,7 +41,6 @@ class NewsDetailPage extends StatelessWidget {
               const Gap(AppConstraints.large),
               Text(
                 article.title.isEmpty ? "No Title" : article.title,
-                // overflow: TextOverflow.ellipsis,
                 style: textTheme.headlineSmall?.copyWith(
                   fontStyle: article.title.isEmpty ? FontStyle.italic : null,
                 ),
@@ -49,7 +48,6 @@ class NewsDetailPage extends StatelessWidget {
               const Gap(AppConstraints.large),
               Text(
                 article.description ?? "No Description",
-                // overflow: TextOverflow.ellipsis,
                 style: textTheme.bodyLarge?.copyWith(
                   color: const Color(0xffA4A4A4),
                 ),
@@ -111,13 +109,11 @@ class ExtraInfo extends StatelessWidget {
           title,
           style: textTheme.bodyLarge,
         ),
-        FittedBox(
-          child: Text(
-            subtitle,
-            overflow: TextOverflow.fade,
-            style: textTheme.bodyLarge?.copyWith(
-              color: const Color(0xffA4A4A4),
-            ),
+        Text(
+          subtitle,
+          overflow: TextOverflow.ellipsis,
+          style: textTheme.bodyLarge?.copyWith(
+            color: const Color(0xffA4A4A4),
           ),
         )
       ],

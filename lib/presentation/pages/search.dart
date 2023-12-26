@@ -1,3 +1,4 @@
+import 'package:app/core/constraints/constraints.dart';
 import 'package:app/presentation/blocs/filter/filter_cubit.dart';
 import 'package:app/presentation/blocs/news_source/news_source_cubit.dart';
 import 'package:app/presentation/blocs/search/search_cubit.dart';
@@ -34,9 +35,12 @@ class _SearchPageState extends State<SearchPage> {
       appBar: AppBar(
         title: TextField(
           controller: _searchController,
-          decoration: const InputDecoration(
-            hintText: 'Search...',
-          ),
+          decoration: InputDecoration(
+              hintText: 'Search...',
+              contentPadding:
+                  EdgeInsets.zero.copyWith(left: AppConstraints.small),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppConstraints.medium))),
           onSubmitted: (query) {
             // Handle the search query when the user submits the text
             _handleSearch(query, context);
@@ -170,14 +174,9 @@ class _SearchPageState extends State<SearchPage> {
     //selected type @default sortBy publishedAt
     final type = context.read<FilterCubit>().state.type;
 
-    final sourceCubit = context.read<NewsSourceCubit>();
-
     //selected sources, if there's any
-    List<Source> sources = [];
-
-    if (sourceCubit is NewsSourceLoaded) {
-      sources = (sourceCubit as NewsSourceLoaded).selected.toList();
-    }
+    List<Source> sources =
+        context.read<NewsSourceCubit>().getSelectedSources() ?? [];
 
     context
         .read<SearchCubit>()
@@ -187,7 +186,20 @@ class _SearchPageState extends State<SearchPage> {
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      context.read<SearchCubit>().loadMore(_searchController.text.trim());
+      //while searching, fetching all the other parameters for search like: sources, filterType
+
+      //selected type @default sortBy publishedAt
+      final type = context.read<FilterCubit>().state.type;
+
+      //selected sources, if there's any
+      List<Source> sources =
+          context.read<NewsSourceCubit>().getSelectedSources() ?? [];
+
+      context.read<SearchCubit>().loadMore(
+            query: _searchController.text.trim(),
+            type: type,
+            sources: sources,
+          );
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     }
   }

@@ -56,7 +56,7 @@ class SourceSelectionDialog extends StatelessWidget {
             final selectedSources =
                 context.read<NewsSourceCubit>().getSelectedSources();
 
-            //selected type @default sortBy publishedAt
+            //selected type @default sortBy popularity
             final type = context.read<FilterCubit>().state.type;
 
             //searched query, if there's any
@@ -66,9 +66,8 @@ class SourceSelectionDialog extends StatelessWidget {
               query = (searchCubit as SearchLoaded).searchText;
             }
 
-            context
-                .read<SearchCubit>()
-                .onSearch(type: type, query: query, sources: selectedSources);
+            context.read<SearchCubit>().fetchFilteredResult(
+                type: type, query: query, sources: selectedSources);
 
             print('Selected Sources: $selectedSources');
 

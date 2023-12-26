@@ -25,8 +25,8 @@ class SearchCubit extends Cubit<SearchState> {
           .cast<String>()
           .toList();
 
-      final List<Article> articles =
-          await newsApi.loadFeedFromEverything(q: query, sources: sourceIds);
+      final List<Article> articles = await newsApi.loadFeedFromEverything(
+          q: query, sources: sourceIds, sortBy: type);
 
       final hasMore = articles.isNotEmpty;
 
@@ -45,15 +45,24 @@ class SearchCubit extends Cubit<SearchState> {
     }
   }
 
-  Future<void> loadMore(String query) async {
+  Future<void> loadMore({
+    String? query,
+    List<Source>? sources,
+    int? firstPage,
+    String? type,
+  }) async {
     try {
       if (state is SearchLoaded) {
         final page = (state as SearchLoaded).page + 1;
         final oldArticles = (state as SearchLoaded).articles;
-
+        final List<String>? sourceIds = sources
+            ?.map((e) => e.id)
+            .where((id) => id != null)
+            .cast<String>()
+            .toList();
         // Call loadSearch with necessary parameters
-        final List<Article> articles =
-            await newsApi.loadFeedFromEverything(page: page, q: query);
+        final List<Article> articles = await newsApi.loadFeedFromEverything(
+            page: page, q: query, sortBy: type, sources: sourceIds);
 
         final hasMore = articles.isNotEmpty;
 
@@ -61,18 +70,46 @@ class SearchCubit extends Cubit<SearchState> {
             articles: [...oldArticles, ...articles],
             page: page,
             hasMore: hasMore,
-            searchText: query));
+            searchText: query ?? ""));
       }
       if (state is LoadingSearch || state is InitialSearch) {
         // Call loadSearch with necessary parameters
-        final List<Article> articles =
-            await newsApi.loadFeedFromEverything(q: query);
+
+        final List<String>? sourceIds = sources
+            ?.map((e) => e.id)
+            .where((id) => id != null)
+            .cast<String>()
+            .toList();
+
+        final List<Article> articles = await newsApi.loadFeedFromEverything(
+            q: query, sortBy: type, sources: sourceIds);
 
         final hasMore = articles.isNotEmpty;
 
         emit(SearchLoaded(
-            articles: articles, page: 1, hasMore: hasMore, searchText: query));
+            articles: articles,
+            page: 1,
+            hasMore: hasMore,
+            searchText: query ?? ""));
       }
+    } on GeneralException catch (e) {
+      emit(SearchError(errorMsg: e.toString()));
+
+      // Catch and handle GeneralException
+      print("General Exception caught: ${e.toString()}");
+    }
+  }
+
+  Future<void> fetchFilteredResult({
+    String? query,
+    List<Source>? sources,
+    int? firstPage,
+    String? type,
+  }) async {
+    try {
+      emit(LoadingSearch());
+      await onSearch(
+          query: query, sources: sources, firstPage: firstPage, type: type);
     } on GeneralException catch (e) {
       emit(SearchError(errorMsg: e.toString()));
 

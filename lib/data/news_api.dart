@@ -6,13 +6,13 @@ import 'package:dio/dio.dart';
 
 abstract class NewsApi {
   Future<List<Article>> loadFeedFromTopHeadline({
-    int page = 0,
+    int page = 1,
     int pageSize = 10,
     String country = "in",
     String? q,
   });
   Future<List<Article>> loadFeedFromEverything({
-    int page = 0,
+    int page = 1,
     int pageSize = 10,
     String? q,
     List<String>? sources,
@@ -101,6 +101,8 @@ class NewsApiImp implements NewsApi {
       // Add parameters to the list
       if (q != null && q.isNotEmpty) {
         queryParams.add("q=$q");
+      } else {
+        queryParams.add("q=description");
       }
       if (sources != null && sources.isNotEmpty) {
         String sourcesString = sources.take(20).join(",");
@@ -123,6 +125,7 @@ class NewsApiImp implements NewsApi {
       if (queryParams.isEmpty) {
         throw const GeneralException("Please Type Something To search", "500");
       }
+      queryParams.add("pageSize=$pageSize");
 
       print("printing baseUrl$baseUrl");
 
