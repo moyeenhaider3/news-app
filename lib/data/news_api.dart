@@ -49,11 +49,7 @@ class NewsApiImp implements NewsApi {
       if (page > 1) {
         queryParams.add("page=$page");
       }
-      //!cannot mix sources with country
-      // if (sources != null) {
-      //   String sourcesString = sources.join(",");
-      //   queryParams.add("sources=$sourcesString");
-      // }
+
       if (country.isNotEmpty) {
         queryParams.add("country=$country");
       }
@@ -106,7 +102,7 @@ class NewsApiImp implements NewsApi {
       if (q != null && q.isNotEmpty) {
         queryParams.add("q=$q");
       }
-      if (sources != null) {
+      if (sources != null && sources.isNotEmpty) {
         String sourcesString = sources.take(20).join(",");
         queryParams.add("sources=$sourcesString");
       }
@@ -125,6 +121,9 @@ class NewsApiImp implements NewsApi {
       // Join the query parameters with "&" and append them to the base URL
       if (queryParams.isNotEmpty) {
         baseUrl += "?${queryParams.join("&")}";
+      }
+      if (queryParams.isEmpty) {
+        throw const GeneralException("Please Type Something To search", "500");
       }
       print("printing baseUrl$baseUrl");
 

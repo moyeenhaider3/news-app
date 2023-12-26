@@ -25,3 +25,10 @@ class NewsSourceError extends NewsSourceState {
   @override
   List<Object> get props => [errorMsg];
 }
+
+// class FilterType extends NewsSourceState {
+//   String type = FilterTypes.popularity;
+//   FilterType({required this.type});
+//   @override
+//   List<Object> get props => [type];
+// }

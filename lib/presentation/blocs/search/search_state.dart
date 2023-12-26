@@ -14,9 +14,13 @@ class LoadingSearch extends SearchState {}
 class SearchLoaded extends SearchState {
   final List<Article> articles;
   final int page;
+  final String searchText;
   final bool hasMore;
   const SearchLoaded(
-      {required this.articles, required this.page, required this.hasMore});
+      {required this.articles,
+      required this.page,
+      required this.hasMore,
+      required this.searchText});
   @override
   List<Object> get props => [articles, page];
 }

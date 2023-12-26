@@ -2,6 +2,13 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
+class FilterTypes {
+  FilterTypes._();
+  static const String popularity = "popularity";
+  static const String relevancy = "relevancy";
+  static const String publishedAt = "publishedAt";
+}
+
 class Source extends Equatable {
   final String? id;
   final String? name;

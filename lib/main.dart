@@ -2,6 +2,7 @@ import 'package:app/core/constraints/routes.dart';
 import 'package:app/core/utils/observer.dart';
 import 'package:app/di.dart';
 import 'package:app/presentation/blocs/feed/feed_cubit.dart';
+import 'package:app/presentation/blocs/filter/filter_cubit.dart';
 import 'package:app/presentation/blocs/location/location_cubit.dart';
 import 'package:app/presentation/blocs/news_source/news_source_cubit.dart';
 import 'package:app/presentation/blocs/search/search_cubit.dart';
@@ -50,6 +51,9 @@ class MyApp extends StatelessWidget {
         Routes.search: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider<SearchCubit>(
+                  create: (context) => sl(),
+                ),
+                BlocProvider<FilterCubit>(
                   create: (context) => sl(),
                 ),
                 BlocProvider<NewsSourceCubit>(

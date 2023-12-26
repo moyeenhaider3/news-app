@@ -11,8 +11,11 @@ class SearchCubit extends Cubit<SearchState> {
 
   final NewsApi newsApi;
 
-  Future<void> onSearch(String query,
-      [List<Source>? sources, int? firstPage, String? type]) async {
+  Future<void> onSearch(
+      {String? query,
+      List<Source>? sources,
+      int? firstPage,
+      String? type}) async {
     //necessary imports
     try {
       final List<String>? sourceIds = sources
@@ -25,7 +28,11 @@ class SearchCubit extends Cubit<SearchState> {
 
       final hasMore = articles.isNotEmpty;
 
-      emit(SearchLoaded(articles: articles, page: 1, hasMore: hasMore));
+      emit(SearchLoaded(
+          articles: articles,
+          page: 1,
+          hasMore: hasMore,
+          searchText: query ?? ""));
     } on GeneralException catch (e) {
       emit(SearchError(errorMsg: e.toString()));
 
@@ -50,7 +57,8 @@ class SearchCubit extends Cubit<SearchState> {
         emit(SearchLoaded(
             articles: [...oldArticles, ...articles],
             page: page,
-            hasMore: hasMore));
+            hasMore: hasMore,
+            searchText: query));
       }
       if (state is LoadingSearch || state is InitialSearch) {
         // Call loadSearch with necessary parameters
@@ -59,7 +67,8 @@ class SearchCubit extends Cubit<SearchState> {
 
         final hasMore = articles.isNotEmpty;
 
-        emit(SearchLoaded(articles: articles, page: 1, hasMore: hasMore));
+        emit(SearchLoaded(
+            articles: articles, page: 1, hasMore: hasMore, searchText: query));
       }
     } on GeneralException catch (e) {
       emit(SearchError(errorMsg: e.toString()));

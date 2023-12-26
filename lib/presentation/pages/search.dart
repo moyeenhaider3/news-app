@@ -1,8 +1,10 @@
 import 'package:app/domain/models/feed.dart';
+import 'package:app/presentation/blocs/filter/filter_cubit.dart';
 import 'package:app/presentation/blocs/news_source/news_source_cubit.dart';
 import 'package:app/presentation/blocs/search/search_cubit.dart';
 import 'package:app/presentation/pages/news_detail.dart';
 import 'package:app/presentation/widgets/feed_card.dart';
+import 'package:app/presentation/widgets/filter_dialog.dart';
 import 'package:app/presentation/widgets/soucres_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,15 +52,46 @@ class _SearchPageState extends State<SearchPage> {
           IconButton(
             onPressed: () async {
               final blc = context.read<NewsSourceCubit>();
+              final filterBlc = context.read<FilterCubit>();
+              final searchBlc = context.read<SearchCubit>();
+
               showDialog(
                 context: context,
-                builder: (context) => BlocProvider<NewsSourceCubit>.value(
-                  value: blc,
-                  child: const SourceSelectionDialog(),
+                builder: (context) => BlocProvider.value(
+                  value: searchBlc,
+                  child: BlocProvider.value(
+                    value: filterBlc,
+                    child: BlocProvider<NewsSourceCubit>.value(
+                      value: blc,
+                      child: const SourceSelectionDialog(),
+                    ),
+                  ),
                 ),
               );
             },
             icon: const Icon(Icons.select_all),
+          ),
+          IconButton(
+            onPressed: () async {
+              final blc = context.read<NewsSourceCubit>();
+              final filterBlc = context.read<FilterCubit>();
+              final searchBlc = context.read<SearchCubit>();
+
+              showDialog(
+                context: context,
+                builder: (context) => BlocProvider.value(
+                  value: searchBlc,
+                  child: BlocProvider.value(
+                    value: filterBlc,
+                    child: BlocProvider<NewsSourceCubit>.value(
+                      value: blc,
+                      child: const SelectFilterDialog(),
+                    ),
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(Icons.sort),
           )
         ],
       ),
@@ -87,9 +120,10 @@ class _SearchPageState extends State<SearchPage> {
                   final List<Source>? selectedSources =
                       context.read<NewsSourceCubit>().getSelectedSources();
 
-                  context
-                      .read<SearchCubit>()
-                      .onSearch(_searchController.text, selectedSources, 1);
+                  context.read<SearchCubit>().onSearch(
+                      query: _searchController.text,
+                      sources: selectedSources,
+                      firstPage: 1);
                 }
               },
               child: SingleChildScrollView(
@@ -129,11 +163,17 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _handleSearch(String query, BuildContext context) {
-    // Handle the search query, for now, print it
     print("Search query: $query");
-    context.read<SearchCubit>().onSearch(query);
-    // You can perform further actions with the search query, like fetching data
-    // and updating the UI with the search results.
+    final type = context.read<FilterCubit>().state.type;
+    final sourceCubit = context.read<NewsSourceCubit>();
+    List<Source> sources = [];
+    if (sourceCubit is NewsSourceLoaded) {
+      sources = (sourceCubit as NewsSourceLoaded).selected.toList();
+    }
+    // if(sources.isEmpty&&)
+    context
+        .read<SearchCubit>()
+        .onSearch(query: query, type: type, sources: sources);
   }
 
   void _onScroll() {

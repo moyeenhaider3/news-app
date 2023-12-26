@@ -30,18 +30,32 @@ class FeedCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(
-            AppConstraints.large,
-          ),
+          padding: const EdgeInsets.symmetric(
+                  horizontal: AppConstraints.medium,
+                  vertical: AppConstraints.large)
+              .copyWith(top: AppConstraints.medium),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              article.urlToImage == null
-                  ? const Placeholder(
-                      child: SizedBox(
-                      height: 150,
-                    ))
-                  : Image.network(article.urlToImage!),
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(AppConstraints.medium),
+                  topRight: Radius.circular(AppConstraints.medium),
+                ),
+                child: article.urlToImage == null
+                    ? const Placeholder(
+                        fallbackHeight: 150,
+                        fallbackWidth: double.infinity,
+                      )
+                    : FadeInImage(
+                        placeholder:
+                            const AssetImage('assets/images/no-img.png'),
+                        image: NetworkImage(article.urlToImage!),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 150,
+                      ),
+              ),
               const Gap(AppConstraints.medium),
               Text(
                 article.title.isEmpty ? "No Title" : article.title,

@@ -12,7 +12,7 @@ class FeedCubit extends Cubit<FeedState> {
 
   final NewsApi newsApi;
   final LocationCubit lc;
-  Future<void> loadPage({String countryCode = "gb"}) async {
+  Future<void> loadPage({String countryCode = "in"}) async {
     // countryCode = (lc ).countryCode;
     print("$countryCode ccccccc");
     try {
