@@ -117,4 +117,11 @@ class SearchCubit extends Cubit<SearchState> {
       print("General Exception caught: ${e.toString()}");
     }
   }
+
+  String getSearchText() {
+    if (state is SearchLoaded) {
+      return (state as SearchLoaded).searchText;
+    }
+    return "";
+  }
 }

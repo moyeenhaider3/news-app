@@ -70,11 +70,7 @@ class SourceSelectionDialog extends StatelessWidget {
             final type = context.read<FilterCubit>().state.type;
 
             //searched query, if there's any
-            String query = "";
-            final searchCubit = context.read<SearchCubit>();
-            if (searchCubit is SearchLoaded) {
-              query = (searchCubit as SearchLoaded).searchText;
-            }
+            String query = context.read<SearchCubit>().getSearchText();
 
             context.read<SearchCubit>().fetchFilteredResult(
                 type: type, query: query, sources: selectedSources.toList());

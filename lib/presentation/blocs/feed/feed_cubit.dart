@@ -50,7 +50,6 @@ class FeedCubit extends Cubit<FeedState> {
       }
     } on GeneralException catch (e) {
       emit(FeedError(errorMsg: e.toString()));
-      print("General Exception caught: ${e.toString()}");
     }
   }
 
@@ -99,9 +98,7 @@ class FeedCubit extends Cubit<FeedState> {
       List<Placemark> address =
           await placemarkFromCoordinates(position.latitude, position.longitude);
       Placemark placeMark = address.first;
-      print("$placeMark  placemark");
       String countryCode = placeMark.isoCountryCode ?? "in";
-      print("$countryCode  countryCode");
       _countryCode = countryCode;
       return countryCode;
     } catch (e) {
