@@ -9,7 +9,6 @@ import 'package:get_it/get_it.dart';
 final sl = GetIt.instance;
 
 void setup() {
-  //sl=>call new obj
   sl.registerSingleton<NewsApiImp>(NewsApiImp());
   sl.registerSingleton<LocationCubit>(LocationCubit());
   sl.registerFactory<FilterCubit>(() => FilterCubit());

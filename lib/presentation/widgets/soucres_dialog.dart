@@ -51,9 +51,15 @@ class SourceSelectionDialog extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
+            //while searching, fetching all the other parameters for search like: query, sortType
+
             final selectedSources =
                 context.read<NewsSourceCubit>().getSelectedSources();
+
+            //selected type @default sortBy publishedAt
             final type = context.read<FilterCubit>().state.type;
+
+            //searched query, if there's any
             String query = "";
             final searchCubit = context.read<SearchCubit>();
             if (searchCubit is SearchLoaded) {
@@ -63,8 +69,10 @@ class SourceSelectionDialog extends StatelessWidget {
             context
                 .read<SearchCubit>()
                 .onSearch(type: type, query: query, sources: selectedSources);
+
             print('Selected Sources: $selectedSources');
-            Navigator.of(context).pop(); // Close the dialog
+
+            Navigator.of(context).pop();
           },
           child: const Text('Submit'),
         ),

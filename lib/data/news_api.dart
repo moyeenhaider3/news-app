@@ -1,6 +1,7 @@
 import 'package:app/core/constraints/config.dart';
 import 'package:app/core/errors/exceptions.dart';
-import 'package:app/domain/models/feed.dart';
+import 'package:app/domain/models/article.dart';
+import 'package:app/domain/models/source.dart';
 import 'package:dio/dio.dart';
 
 abstract class NewsApi {
@@ -8,7 +9,6 @@ abstract class NewsApi {
     int page = 0,
     int pageSize = 10,
     String country = "in",
-    // List<String>? sources,
     String? q,
   });
   Future<List<Article>> loadFeedFromEverything({
@@ -31,7 +31,6 @@ class NewsApiImp implements NewsApi {
     int page = 1,
     int pageSize = 5,
     String country = "in",
-    // List<String>? sources,
     String? q,
   }) async {
     try {
@@ -54,6 +53,7 @@ class NewsApiImp implements NewsApi {
         queryParams.add("country=$country");
       }
       queryParams.add("pageSize=$pageSize");
+
       // Join the query parameters with "&" and append them to the base URL
       if (queryParams.isNotEmpty) {
         baseUrl += "?${queryParams.join("&")}";
@@ -106,13 +106,10 @@ class NewsApiImp implements NewsApi {
         String sourcesString = sources.take(20).join(",");
         queryParams.add("sources=$sourcesString");
       }
+
       if (page > 1) {
         queryParams.add("page=$page");
       }
-
-      // if (source != null) {
-      //   queryParams.add("sources=$source");
-      // }
 
       if (sortBy != null) {
         queryParams.add("sortBy=$sortBy");
@@ -122,9 +119,11 @@ class NewsApiImp implements NewsApi {
       if (queryParams.isNotEmpty) {
         baseUrl += "?${queryParams.join("&")}";
       }
+
       if (queryParams.isEmpty) {
         throw const GeneralException("Please Type Something To search", "500");
       }
+
       print("printing baseUrl$baseUrl");
 
       // Check for errors in the API response

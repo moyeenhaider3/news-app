@@ -1,5 +1,5 @@
 import 'package:app/core/constraints/constraints.dart';
-import 'package:app/domain/models/feed.dart';
+import 'package:app/domain/models/article.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 

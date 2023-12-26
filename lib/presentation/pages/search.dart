@@ -1,4 +1,3 @@
-import 'package:app/domain/models/feed.dart';
 import 'package:app/presentation/blocs/filter/filter_cubit.dart';
 import 'package:app/presentation/blocs/news_source/news_source_cubit.dart';
 import 'package:app/presentation/blocs/search/search_cubit.dart';
@@ -8,6 +7,8 @@ import 'package:app/presentation/widgets/filter_dialog.dart';
 import 'package:app/presentation/widgets/soucres_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../domain/models/source.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -163,14 +164,21 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _handleSearch(String query, BuildContext context) {
+    //while searching, fetching all the other parameters for search like: sources, filterType
     print("Search query: $query");
+
+    //selected type @default sortBy publishedAt
     final type = context.read<FilterCubit>().state.type;
+
     final sourceCubit = context.read<NewsSourceCubit>();
+
+    //selected sources, if there's any
     List<Source> sources = [];
+
     if (sourceCubit is NewsSourceLoaded) {
       sources = (sourceCubit as NewsSourceLoaded).selected.toList();
     }
-    // if(sources.isEmpty&&)
+
     context
         .read<SearchCubit>()
         .onSearch(query: query, type: type, sources: sources);

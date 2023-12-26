@@ -1,8 +1,9 @@
 import 'package:app/core/errors/exceptions.dart';
 import 'package:app/data/news_api.dart';
-import 'package:app/domain/models/feed.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../../domain/models/source.dart';
 
 part 'news_source_state.dart';
 
@@ -20,15 +21,14 @@ class NewsSourceCubit extends Cubit<NewsSourceState> {
 
       // Catch and handle GeneralException
       print("General Exception caught: ${e.toString()}");
-      // Handle the exception as needed, e.g., show an error message to the user
     } catch (e) {
       emit(NewsSourceError(errorMsg: e.toString()));
       // Catch other exceptions
       print("Unexpected Exception caught: ${e.toString()}");
-      // Handle the exception as needed
     }
   }
 
+  //?updated method is toggleSelectedSource for addSelectedSource
   void addSelectedSource(Source sourceToAdd) {
     print("${sourceToAdd.name}hello");
 
@@ -44,6 +44,7 @@ class NewsSourceCubit extends Cubit<NewsSourceState> {
   }
 
   // Method to remove a selected source
+  //?updated method is toggleSelectedSource for removeSelectedSource
   void removeSelectedSource(Source sourceToRemove) {
     if (state is NewsSourceLoaded) {
       final currentState = state as NewsSourceLoaded;
@@ -84,7 +85,7 @@ class NewsSourceCubit extends Cubit<NewsSourceState> {
 
       return selectedSources;
     } else {
-      return null; // or handle default case as per your app's logic
+      return null;
     }
   }
 }

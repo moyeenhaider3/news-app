@@ -1,4 +1,5 @@
 import 'package:app/domain/models/feed.dart';
+import 'package:app/domain/models/source.dart';
 import 'package:app/presentation/blocs/filter/filter_cubit.dart';
 import 'package:app/presentation/blocs/filter/filter_state.dart';
 import 'package:app/presentation/blocs/news_source/news_source_cubit.dart';
@@ -65,13 +66,17 @@ class SelectFilterDialog extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
+            //while searching, fetching all the other parameters for search like: sources, searched query
             final type = context.read<FilterCubit>().state.type;
+
+            //searched query, if there's any
             String query = "";
             final searchCubit = context.read<SearchCubit>();
             if (searchCubit is SearchLoaded) {
               query = (searchCubit as SearchLoaded).searchText;
             }
 
+            //selected sources, if there's any
             final sourceCubit = context.read<NewsSourceCubit>();
             List<Source> sources = [];
             if (sourceCubit is NewsSourceLoaded) {
@@ -81,6 +86,7 @@ class SelectFilterDialog extends StatelessWidget {
             context
                 .read<SearchCubit>()
                 .onSearch(type: type, query: query, sources: sources);
+
             Navigator.of(context).pop();
           },
           child: const Text('Submit'),

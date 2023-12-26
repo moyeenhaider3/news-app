@@ -11,7 +11,7 @@ class GeneralException implements Exception {
   /// A status describing the error.
   // final String status;
 
-    /// A code describing the error.
+  /// A code describing the error.
   final String code;
 
   @override
